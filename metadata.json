@@ -1,0 +1,6 @@
+{
+  "name": "Singapore Transport Live Hub",
+  "description": "Real-time Singapore transport dashboard powered by LTA DataMall APIs for bus arrivals, carpark lot availability, traffic incidents, and MRT/LRT train alerts.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
