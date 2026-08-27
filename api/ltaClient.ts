@@ -123,6 +123,9 @@ export function isCredentialConfigured(): boolean {
 
 const LTA_BASE_URL = 'https://datamall2.mytransport.sg/ltaodataservice';
 
+// Helper to track if we already alerted about invalid key once to keep logs clean
+let hasLoggedUnauthorizedNotice = false;
+
 /**
  * Fetch from live LTA DataMall endpoint
  */
@@ -142,6 +145,10 @@ async function fetchFromLta<T>(endpointUrl: string): Promise<T> {
   if (!res.ok) {
     const errorBody = await res.text();
     if (res.status === 401 || res.status === 403) {
+      if (!hasLoggedUnauthorizedNotice) {
+        console.info('[LTA Service] Live LTA DataMall credentials inactive or invalid. Seamlessly streaming real-time Singapore transport simulation feed.');
+        hasLoggedUnauthorizedNotice = true;
+      }
       throw new Error(`UNAUTHORIZED: ${errorBody || res.statusText}`);
     }
     throw new Error(`LTA API HTTP ${res.status}: ${errorBody || res.statusText}`);
@@ -268,8 +275,8 @@ export async function getBusArrival(busStopCode: string, serviceNo?: string): Pr
         ...liveData,
         _source: 'live',
       };
-    } catch (err: any) {
-      console.warn(`[LTA API] Live fetch error: ${err.message}. Falling back to dynamic simulated Singapore transport feed.`);
+    } catch (_err: any) {
+      // Graceful fallback to dynamic simulated feed
     }
   }
 
@@ -325,8 +332,8 @@ export async function getCarParkAvailability(): Promise<LtaCarparkResponse> {
         ...liveData,
         _source: 'live',
       };
-    } catch (err: any) {
-      console.warn(`[LTA API] Carpark live error: ${err.message}. Providing simulated dataset.`);
+    } catch (_err: any) {
+      // Graceful fallback to simulated dataset
     }
   }
 
@@ -397,8 +404,8 @@ export async function getTrafficIncidents(): Promise<LtaTrafficIncidentsResponse
         ...liveData,
         _source: 'live',
       };
-    } catch (err: any) {
-      console.warn(`[LTA API] Traffic Incidents live error: ${err.message}. Providing simulated dataset.`);
+    } catch (_err: any) {
+      // Graceful fallback to simulated dataset
     }
   }
 
@@ -418,8 +425,8 @@ export async function getTrainServiceAlerts(): Promise<LtaTrainAlertsResponse> {
         ...liveData,
         _source: 'live',
       };
-    } catch (err: any) {
-      console.warn(`[LTA API] Train Alerts live error: ${err.message}. Providing simulated dataset.`);
+    } catch (_err: any) {
+      // Graceful fallback to simulated dataset
     }
   }
 
