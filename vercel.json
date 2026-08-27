@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/api/bus-arrival",
+      "destination": "/api/bus-arrival"
+    },
+    {
+      "source": "/api/carparks",
+      "destination": "/api/carparks"
+    },
+    {
+      "source": "/api/traffic-incidents",
+      "destination": "/api/traffic-incidents"
+    },
+    {
+      "source": "/api/train-alerts",
+      "destination": "/api/train-alerts"
+    },
+    {
+      "source": "/api/config-status",
+      "destination": "/api/config-status"
+    },
+    {
+      "source": "/api/health",
+      "destination": "/api/health"
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index"
+    }
+  ]
+}

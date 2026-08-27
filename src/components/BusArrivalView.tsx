@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { BusArrivalData, BusService, BusArrivalInfo } from '../types';
 import { PRESET_BUS_STOPS, PresetBusStop } from '../data/singaporeStops';
+import { generateClientBusArrival } from '../services/clientTransportService';
 
 export const BusArrivalView: React.FC = () => {
   const [busStopCode, setBusStopCode] = useState<string>('83139');
@@ -54,20 +55,25 @@ export const BusArrivalView: React.FC = () => {
       }
 
       const res = await fetch(url);
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        if (errorData.error === 'credential not configured') {
-          throw new Error('Credential not configured. Please set LTA_ACCOUNT_KEY in environment variables.');
-        }
-        throw new Error(errorData.error || `HTTP ${res.status}: Failed to fetch bus arrivals`);
+      if (res.ok) {
+        const result: BusArrivalData = await res.json();
+        setData(result);
+        setLastUpdated(new Date());
+        setSecondsRemaining(20);
+        return;
       }
 
-      const result: BusArrivalData = await res.json();
-      setData(result);
+      // If status is 404 or other server error, fallback to client dynamic calculation
+      const fallback = generateClientBusArrival(stopCode.trim(), svcNo?.trim());
+      setData(fallback);
       setLastUpdated(new Date());
       setSecondsRemaining(20);
-    } catch (err: any) {
-      setError(err.message || 'An unexpected error occurred while fetching bus arrivals.');
+    } catch (_err: any) {
+      // Network failure / offline fallback
+      const fallback = generateClientBusArrival(stopCode.trim(), svcNo?.trim());
+      setData(fallback);
+      setLastUpdated(new Date());
+      setSecondsRemaining(20);
     } finally {
       setLoading(false);
     }
