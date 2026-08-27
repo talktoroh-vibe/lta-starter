@@ -22,6 +22,8 @@ export interface BusArrivalData {
   'odata.metadata'?: string;
   BusStopCode: string;
   Services: BusService[];
+  _source?: 'live' | 'simulated';
+  _notice?: string;
 }
 
 export interface CarparkItem {
@@ -37,6 +39,8 @@ export interface CarparkItem {
 export interface CarparkResponse {
   'odata.metadata'?: string;
   value: CarparkItem[];
+  _source?: 'live' | 'simulated';
+  _notice?: string;
 }
 
 export interface TrafficIncident {
@@ -49,6 +53,8 @@ export interface TrafficIncident {
 export interface TrafficIncidentsResponse {
   'odata.metadata'?: string;
   value: TrafficIncident[];
+  _source?: 'live' | 'simulated';
+  _notice?: string;
 }
 
 export interface TrainAlertAffectedSegment {
@@ -70,6 +76,8 @@ export interface TrainAlertsResponse {
       CreatedDate: string;
     }>;
   };
+  _source?: 'live' | 'simulated';
+  _notice?: string;
 }
 
 export type ActiveTab = 'bus' | 'carparks' | 'traffic' | 'trains' | 'api-docs';

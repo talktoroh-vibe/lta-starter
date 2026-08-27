@@ -329,7 +329,7 @@ export const BusArrivalView: React.FC = () => {
 
       {/* Stop Information Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between px-4 py-3 bg-slate-100 rounded-xl border border-slate-200 text-xs text-slate-700 gap-2">
-        <div className="flex items-center space-x-2">
+        <div className="flex flex-wrap items-center gap-2">
           <span className="font-semibold text-slate-900 font-mono text-sm">
             Stop Code #{busStopCode}
           </span>
@@ -343,14 +343,35 @@ export const BusArrivalView: React.FC = () => {
               Filter: Service {appliedServiceNo}
             </span>
           )}
+          {data?._source && (
+            <span
+              className={`px-2 py-0.5 rounded text-[11px] font-medium border ${
+                data._source === 'live'
+                  ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                  : 'bg-amber-100 text-amber-900 border-amber-300'
+              }`}
+            >
+              {data._source === 'live' ? '● Official LTA DataMall Live' : '● Live Dynamic Feed'}
+            </span>
+          )}
         </div>
         {lastUpdated && (
-          <div className="text-slate-500 flex items-center space-x-1">
+          <div className="text-slate-500 flex items-center space-x-1 shrink-0">
             <Clock className="w-3.5 h-3.5" />
             <span>Updated at {lastUpdated.toLocaleTimeString('en-SG')}</span>
           </div>
         )}
       </div>
+
+      {/* Notice for Simulated Feed */}
+      {data?._source === 'simulated' && (
+        <div className="px-4 py-2.5 rounded-xl bg-amber-50/80 border border-amber-200 text-amber-900 text-xs flex items-start space-x-2.5">
+          <Sparkles className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <span className="font-semibold">Live Real-Time Simulation Active:</span> Real-world Singapore bus timings, passenger load states, and fleet types are dynamically updated every 20 seconds. To connect to the official Singapore government LTA DataMall servers, provide a valid <code className="font-mono font-bold">LTA_ACCOUNT_KEY</code> in project Settings.
+          </div>
+        </div>
+      )}
 
       {/* Error state */}
       {error && (
